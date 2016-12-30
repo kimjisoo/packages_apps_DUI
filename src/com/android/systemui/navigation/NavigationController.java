@@ -55,7 +55,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 
-public class NavigationController implements PackageChangedListener, ScreenPinningRequest.Callbacks {
+public class NavigationController implements PackageChangedListener {
     private static final String TAG = NavigationController.class.getSimpleName();
 
     public static final int NAVIGATION_MODE_SMARTBAR = 0;
@@ -194,6 +194,9 @@ public class NavigationController implements PackageChangedListener, ScreenPinni
     }
 
     public void screenPinningStateChanged(boolean enabled) {
+        if (mScreenPinningEnabled == enabled) {
+            return;
+        }
         mScreenPinningEnabled = enabled;
         mPulseController.setScreenPinningState(enabled);
         boolean showing = Settings.Secure.getInt(mContext.getContentResolver(),
@@ -355,10 +358,5 @@ public class NavigationController implements PackageChangedListener, ScreenPinni
             thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
         }
-    }
-
-    @Override
-    public void onStartScreenPinning() {
-        screenPinningStateChanged(true);
     }
 }
